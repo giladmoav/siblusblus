@@ -1,7 +1,5 @@
-
+#include "fold.h"
 #include <iostream>
-
-constexpr unsigned int BOARD_SIZE = 11;
 
 using std::cout;
 using std::endl;
@@ -25,7 +23,13 @@ void print_rows(unsigned int board_size) {
     }
 }
 
-void main() {
-    print_column_headers(BOARD_SIZE);
-    print_rows(BOARD_SIZE);
+/// print a product table given 'board_size'
+void print_product_table(unsigned int board_size) {
+    print_column_headers(board_size);
+    print_rows(board_size);
+}
+
+/// print a product table with default board size
+void print_product_table() {
+    print_product_table(BOARD_SIZE);
 }
