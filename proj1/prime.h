@@ -1,3 +1,8 @@
-#pragma once
+#ifndef __PRIME_H__
+#define __PRIME_H__
 
-bool is_prime(int number);
+constexpr int MINIMAL_DIVIDER = 2;
+
+bool is_prime(unsigned int number);
+
+#endif // !__PRIME_H__
