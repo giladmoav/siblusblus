@@ -3,17 +3,37 @@
 #include <regex>
 #include <string>
 
+using std::cin;
+using std::cout;
+using std::endl;
+using std::regex;
+using std::regex_match;
+using std::sqrt;
+using std::stoul;
+using std::string;
+using std::out_of_range;
+
+constexpr int ERROR_RETURN_VALUE = -1;
+const regex NUMBER_REGEX("\\d+");
+
 int main() {
-    std::string input;
-    std::regex number_regex("\\d+");
+    cout << "Please provide an integer: ";
 
-    std::cout << "Please provide an integer: ";
-    std::cin >> input;
+    string input;
+    cin >> input;
 
-    if (!std::regex_match(input, number_regex)) {
-        std::cout << "Make sure the input is a valid positive integer!" << std::endl;
-        return -1;
+    if (!regex_match(input, NUMBER_REGEX)) {
+        cout << "Make sure the input is a valid positive integer!" << endl;
+        return ERROR_RETURN_VALUE;
     }
 
-    std::cout << "Sqrt is: " << std::sqrt(std::stoi(input)) << std::endl;
+    unsigned long input_long;
+    try {
+        input_long = stoul(input);
+    } catch (out_of_range) {
+        cout << "Make sure the input is in range!" << endl;
+        return ERROR_RETURN_VALUE;
+    }
+
+    cout << "Sqrt is: " << sqrt(input_long) << endl;
 }
