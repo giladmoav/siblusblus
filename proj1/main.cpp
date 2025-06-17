@@ -4,9 +4,14 @@
 using std::cout;
 using std::endl;
 
+void print_array(unsigned int array[], unsigned int count) {
+    for (int i = 0; i < count; i++) {
+        cout << i << ": " << array[i] << endl;
+    }
+}
+
 int main() {
-    cout << "9 is prime? " << isPrime(9) << endl;
-    cout << "11 is prime? " << isPrime(11) << endl;
-    cout << "13 is prime? " << isPrime(13) << endl;
-    cout << "16 is prime? " << isPrime(16) << endl;
+    unsigned int array[5];
+    find_primes(array, 5);
+    print_array(array, 5);
 }
