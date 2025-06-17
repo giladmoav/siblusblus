@@ -15,3 +15,4 @@ int main() {
     find_primes(array, 5);
     print_array(array, 5);
 }
+

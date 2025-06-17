@@ -7,3 +7,4 @@ bool isPrime(unsigned int number);
 void find_primes(unsigned int output_array[], unsigned int count);
 
 #endif // !__PRIME_H__
+

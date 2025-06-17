@@ -29,3 +29,4 @@ void find_primes(unsigned int output_array[], unsigned int count) {
         current_number++;
     }
 }
+
