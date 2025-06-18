@@ -1,49 +1,60 @@
 #include "complex_math.h"
 #include <iostream>
 
+using complex::ComplexNumber;
 using std::cout;
 using std::endl;
-using complex::ComplexNumber;
 
-ComplexNumber::ComplexNumber() : real(0), imaginary(0) {
+/// construct a "zero" complex number
+ComplexNumber::ComplexNumber() : m_real(0), m_imaginary(0) {
 }
 
-ComplexNumber::ComplexNumber(double real, double imaginary) : real(real), imaginary(imaginary) {
+/// construct a complex number given the real and imaginary denominators
+ComplexNumber::ComplexNumber(double real, double imaginary) : m_real(real), m_imaginary(imaginary) {
 }
 
+/// get the real part of a complex number
 double ComplexNumber::get_real_part() const {
-    return real;
+    return m_real;
 }
 
+/// set the real part of a complex number
 void ComplexNumber::set_real_part(double real) {
-    this->real = real;
+    m_real = real;
 }
 
+/// get the imaginary part of a complex number
 double ComplexNumber::get_imaginary_part() const {
-    return imaginary;
+    return m_imaginary;
 }
 
+/// set the imaginary part of a complex number
 void ComplexNumber::set_imaginary_part(double imaginary) {
-    this->imaginary = imaginary;
+    m_imaginary = imaginary;
 }
 
-bool ComplexNumber::operator==(const ComplexNumber& rhs) {
-    return real == rhs.get_real_part() && imaginary == rhs.get_imaginary_part();
+/// check if two complex numbers are equivalent
+bool ComplexNumber::operator==(const ComplexNumber& rhs) const {
+    return m_real == rhs.get_real_part() && m_imaginary == rhs.get_imaginary_part();
 }
 
-ComplexNumber ComplexNumber::operator+(const ComplexNumber& rhs) {
-    return ComplexNumber(real + rhs.get_real_part(), imaginary + rhs.get_imaginary_part());
+/// add two complex numbers
+ComplexNumber ComplexNumber::operator+(const ComplexNumber& rhs) const {
+    return ComplexNumber(m_real + rhs.get_real_part(), m_imaginary + rhs.get_imaginary_part());
 }
 
-ComplexNumber ComplexNumber::operator-(const ComplexNumber& rhs) {
-    return ComplexNumber(real - rhs.get_real_part(), imaginary - rhs.get_imaginary_part());
+/// substract two complex numbers
+ComplexNumber ComplexNumber::operator-(const ComplexNumber& rhs) const {
+    return ComplexNumber(m_real - rhs.get_real_part(), m_imaginary - rhs.get_imaginary_part());
 }
 
-ComplexNumber ComplexNumber::operator*(const ComplexNumber& rhs) {
-    return ComplexNumber(real * rhs.get_real_part() - imaginary * rhs.get_imaginary_part(),
-                         real * rhs.get_imaginary_part() + imaginary * rhs.get_real_part());
+/// multiply two complex numbers
+ComplexNumber ComplexNumber::operator*(const ComplexNumber& rhs) const {
+    return ComplexNumber(m_real * rhs.get_real_part() - m_imaginary * rhs.get_imaginary_part(),
+                         m_real * rhs.get_imaginary_part() + m_imaginary * rhs.get_real_part());
 }
 
-void ComplexNumber::print() {
-    cout << real << " + i * " << imaginary << endl;
+/// print a complex number
+void ComplexNumber::print() const {
+    cout << m_real << " + i * " << m_imaginary << endl;
 }
