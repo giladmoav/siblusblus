@@ -1,8 +1,10 @@
 #ifndef __PRIME_H__
 #define __PRIME_H__
 
-constexpr unsigned int MINIMAL_DIVIDER = 2;
+#include <cstdint>
 
-bool isPrime(unsigned int number);
+constexpr uint32_t MINIMAL_DIVIDER = 2;
+
+bool isPrime(uint32_t number);
 
 #endif // !__PRIME_H__
