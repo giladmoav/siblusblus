@@ -3,6 +3,6 @@
 
 constexpr unsigned int MINIMAL_DIVIDER = 2;
 
-bool is_prime(unsigned int number);
+bool isPrime(unsigned int number);
 
 #endif // !__PRIME_H__

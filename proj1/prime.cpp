@@ -2,10 +2,10 @@
 #include <cmath>
 
 /// returns true if 'number' is prime
-bool is_prime(unsigned int number) {
-    long double long_double_number = static_cast<long double>(number);
-    unsigned int maximal_divider = static_cast<unsigned int>(std::sqrt(long_double_number));
-    for (unsigned int i = MINIMAL_DIVIDER; i <= maximal_divider; i++) {
+bool isPrime(unsigned int number) {
+    double doubleNumber = static_cast<double>(number);
+    unsigned int maximalDivider = static_cast<unsigned int>(std::sqrt(doubleNumber));
+    for (unsigned int i = MINIMAL_DIVIDER; i <= maximalDivider; i++) {
         if (number % i == 0) {
             return false;
         }
