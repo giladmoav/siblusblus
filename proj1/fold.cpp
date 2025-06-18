@@ -14,7 +14,7 @@ void printColumnHeaders(unsigned int board_size) {
 
 /// print rows of product table of size 'board_size'
 void printRows(unsigned int board_size) {
-    for (int i = 1; i <= board_size; i++) {
+    for (unsigned int i = 1; i <= board_size; i++) {
         cout << i;
         for (unsigned int j = 1; j <= board_size; j++) {
             cout << "\t" << i * j;
