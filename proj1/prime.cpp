@@ -16,19 +16,19 @@ bool isPrime(uint32_t number) {
 }
 
 /** 
- * find 'count' primes and put them in 'output_array'
- * output_array [OUT] pointer to an unsigned integer array to put the results in.
+ * find 'count' primes and put them in 'outputArray'
+ * outputArray [OUT] pointer to an unsigned integer array to put the results in.
  * count [IN] the number of primes to find.
  */
-void find_primes(unsigned int output_array[], unsigned int count) {
-    unsigned int current_count = 0;
-    unsigned int current_number = MINIMAL_DIVIDER;
+void findPrimes(unsigned int outputArray[], unsigned int count) {
+    unsigned int currentCount = 0;
+    unsigned int currentNumber = MINIMAL_DIVIDER;
 
-    while (current_count < count) {
-        if (is_prime(current_number)) {
-            output_array[current_count++] = current_number;
+    while (currentCount < count) {
+        if (isPrime(currentNumber)) {
+            outputArray[currentCount++] = currentNumber;
         }
-        current_number++;
+        currentNumber++;
     }
 }
 
