@@ -7,6 +7,9 @@ int main() {
 #include "calculator.h"
 #include <iostream>
 
+using calculator::Calculator;
+using calculator::DivisionByZeroException;
+using calculator::IllegalCalculatorOperation;
 using std::cout;
 using std::endl;
 
@@ -26,10 +29,10 @@ int main() {
     }
 
     cout << "Now using Calculator::calculate :" << endl;
-    cout << "2.1 + 3.2 = " << Calculator::calculate(2.1, ADD_SYMBOL, 3.2) << endl;
-    cout << "2.2 - 3.2 = " << Calculator::calculate(2.2, SUBSTRACT_SYMBOL, 3.1) << endl;
-    cout << "2.3 * 3.3 = " << Calculator::calculate(2.3, MULTIPLY_SYMBOL, 3.3) << endl;
-    cout << "2.4 / 3.5 = " << Calculator::calculate(2.4, DIVIDE_SYMBOL, 3.5) << endl;
+    cout << "2.1 + 3.2 = " << Calculator::calculate(2.1, '+', 3.2) << endl;
+    cout << "2.2 - 3.2 = " << Calculator::calculate(2.2, '-', 3.1) << endl;
+    cout << "2.3 * 3.3 = " << Calculator::calculate(2.3, '*', 3.3) << endl;
+    cout << "2.4 / 3.5 = " << Calculator::calculate(2.4, '/', 3.5) << endl;
 
     cout << "Lets check illegal calculator operation!" << endl;
     try {

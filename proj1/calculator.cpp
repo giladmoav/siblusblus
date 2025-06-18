@@ -1,5 +1,9 @@
 #include "calculator.h"
 
+using calculator::Calculator;
+using calculator::DivisionByZeroException;
+using calculator::IllegalCalculatorOperation;
+
 /// return val1 + val2
 double Calculator::add(double val1, double val2) {
     return val1 + val2;
@@ -40,11 +44,9 @@ double Calculator::calculate(double val1, char op, double val2) {
 }
 
 /// return a string describing the exception
-const char* DivisionByZeroException::what() const noexcept {
-    return DIVISION_BY_ZERO_STRING;
+DivisionByZeroException::DivisionByZeroException() : runtime_error(DIVISION_BY_ZERO_STRING) {
 }
 
 /// return a string describing the exception
-const char* IllegalCalculatorOperation::what() const noexcept {
-    return ILLEGAL_CALCULATOR_OPERATION_STRING;
+IllegalCalculatorOperation::IllegalCalculatorOperation() : runtime_error(ILLEGAL_CALCULATOR_OPERATION_STRING) {
 }
