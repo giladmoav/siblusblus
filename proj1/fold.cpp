@@ -5,7 +5,7 @@ using std::cout;
 using std::endl;
 
 /// print headers of product table of size 'board_size'
-void print_column_headers(unsigned int board_size) {
+void printColumnHeaders(unsigned int board_size) {
     for (unsigned int i = 1; i <= board_size; i++) {
         cout << "\t" << i;
     }
@@ -13,7 +13,7 @@ void print_column_headers(unsigned int board_size) {
 }
 
 /// print rows of product table of size 'board_size'
-void print_rows(unsigned int board_size) {
+void printRows(unsigned int board_size) {
     for (int i = 1; i <= board_size; i++) {
         cout << i;
         for (unsigned int j = 1; j <= board_size; j++) {
@@ -24,7 +24,7 @@ void print_rows(unsigned int board_size) {
 }
 
 /// print a product table given 'board_size'
-void print_product_table(unsigned int board_size) {
-    print_column_headers(board_size);
-    print_rows(board_size);
+void printProductTable(unsigned int board_size) {
+    printColumnHeaders(board_size);
+    printRows(board_size);
 }
