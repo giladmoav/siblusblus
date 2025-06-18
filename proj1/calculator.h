@@ -3,8 +3,6 @@
 
 #include <stdexcept>
 
-using std::runtime_error;
-
 namespace calculator {
 
 constexpr char DIVISION_BY_ZERO_STRING[] = "Division by zero is illegal!";
@@ -15,12 +13,12 @@ constexpr char SUBSTRACT_SYMBOL = '-';
 constexpr char MULTIPLY_SYMBOL = '*';
 constexpr char DIVIDE_SYMBOL = '/';
 
-class DivisionByZeroException : public runtime_error {
+class DivisionByZeroException : public std::runtime_error {
   public:
     DivisionByZeroException();
 };
 
-class IllegalCalculatorOperation : public runtime_error {
+class IllegalCalculatorOperation : public std::runtime_error {
   public:
     IllegalCalculatorOperation();
 };

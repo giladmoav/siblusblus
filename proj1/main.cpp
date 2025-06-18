@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-#include <iostream>
-
-int main() {
-    std::cout << "Hello World!\n";
-=======
 #include "calculator.h"
 #include <iostream>
 
@@ -40,5 +34,4 @@ int main() {
     } catch (const IllegalCalculatorOperation& exception) {
         cout << "Good! We got exception: " << exception.what() << endl;
     }
->>>>>>> Add caclulator
 }
