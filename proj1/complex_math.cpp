@@ -7,10 +7,12 @@ using std::endl;
 
 /// construct a "zero" complex number
 ComplexNumber::ComplexNumber() : m_real(0), m_imaginary(0) {
+    // intentionally emtpy. all members are initiated in the intialization list.
 }
 
 /// construct a complex number given the real and imaginary denominators
 ComplexNumber::ComplexNumber(double real, double imaginary) : m_real(real), m_imaginary(imaginary) {
+    // intentionally emtpy. all members are initiated in the intialization list.
 }
 
 /// get the real part of a complex number
