@@ -20,9 +20,9 @@ bool isPrime(uint32_t number) {
  * outputArray [OUT] pointer to an unsigned integer array to put the results in.
  * count [IN] the number of primes to find.
  */
-void findPrimes(unsigned int outputArray[], unsigned int count) {
-    unsigned int currentCount = 0;
-    unsigned int currentNumber = MINIMAL_DIVIDER;
+void findPrimes(uint32_t outputArray[], uint32_t count) {
+    uint32_t currentCount = 0;
+    uint32_t currentNumber = MINIMAL_DIVIDER;
 
     while (currentCount < count) {
         if (isPrime(currentNumber)) {
