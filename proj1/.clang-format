@@ -6,3 +6,4 @@ Language: Cpp
 DerivePointerAlignment: false
 PointerAlignment: Left
 BreakBeforeBraces: Attach
+BreakTemplateDeclarations: Yes
