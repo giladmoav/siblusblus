@@ -11,7 +11,7 @@ static HANDLE mutexHandle;
 /// ensure the autoruns value is set for the program
 void ensureAutoruns() {
     // path to the current process
-    LPSTR path = new char[MAX_PATH];
+    char path[MAX_PATH + 1];
     if (!GetModuleFileNameA(nullptr, path, MAX_PATH)) {
         cout << "Could not get the module filename" << endl;
         exit(FAILURE_EXIT_CODE);
@@ -31,11 +31,11 @@ void ensureAutoruns() {
                            static_cast<DWORD>(strlen(path) + 1));
         if (createStatus != ERROR_SUCCESS) {
             cout << "Could not set the autorun registry value" << endl;
+            RegCloseKey(hkey);
             exit(FAILURE_EXIT_CODE);
         }
     }
     RegCloseKey(hkey);
-    delete[] path;
 }
 
 /// initialize all the dependencies for the program
