@@ -20,8 +20,21 @@ class AutorunsRegKeyResource {
 
     bool ensureStringValue(const char* valueName, char* value);
 
+  private:
     HKEY m_hkey;
 };
+
+class MutexResource {
+  public:
+    explicit MutexResource(const char* mutexName);
+    ~MutexResource();
+
+    bool acquireLock();
+  private:
+    const char* m_name;
+    HANDLE m_handle;
+};
+
 void technician();
 
 } // namespace prog

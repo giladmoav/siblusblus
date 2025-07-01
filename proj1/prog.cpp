@@ -4,10 +4,11 @@
 #include <iostream>
 
 using prog::AutorunsRegKeyResource;
+using prog::MutexResource;
 using std::cout;
 using std::endl;
 
-static HANDLE mutexHandle;
+static MutexResource mutexResource(MUTEX_NAME);
 
 /// ensure the autoruns value is set for the program
 void ensureAutoruns() {
@@ -25,28 +26,17 @@ void ensureAutoruns() {
     }
 }
 
-/// initialize all the dependencies for the program
-void initProgram() {
-    mutexHandle = CreateMutexA(nullptr, true, MUTEX_NAME);
-
-    if (!mutexHandle) {
-        cout << "Lock creation has failed" << endl;
-        exit(FAILURE_EXIT_CODE);
-    }
-    if (GetLastError() == ERROR_ALREADY_EXISTS) {
-        cout << "Lock has already been aquired" << endl;
-        exit(FAILURE_EXIT_CODE);
-    }
-
-    atexit([]() { ReleaseMutex(mutexHandle); });
-    ensureAutoruns();
-}
-
 /// function for running the technician program
 void prog::technician() {
-
-    initProgram();
-    MessageBoxA(nullptr, "MANAGEMENT PROGRAM IS UP", "Management Program", MB_OK);
+    if (!mutexResource.acquireLock()) {
+        cout << "Could not acquire lock" << endl;
+        exit(FAILURE_EXIT_CODE);
+    }
+    ensureAutoruns();
+    if (!MessageBoxA(nullptr, "MANAGEMENT PROGRAM IS UP", "Management Program", MB_OK)) {
+        cout << "Could not set up message box" << endl;
+        exit(FAILURE_EXIT_CODE);
+    }
     Sleep(MS_IN_HOUR);
 }
 
@@ -76,4 +66,23 @@ bool AutorunsRegKeyResource::ensureStringValue(const char* valueName, char* valu
         }
     }
     return true;
+}
+
+prog::MutexResource::MutexResource(const char* mutexName) : m_name(mutexName), m_handle(nullptr) {
+    // intentionally empty
+}
+
+prog::MutexResource::~MutexResource() {
+    if (m_handle) {
+        ReleaseMutex(m_handle);
+    }
+}
+
+bool prog::MutexResource::acquireLock() {
+    HANDLE handle = CreateMutexA(nullptr, true, m_name);
+    if (handle && GetLastError() != ERROR_ALREADY_EXISTS) {
+        m_handle = handle;
+        return true;
+    }
+    return false;
 }
