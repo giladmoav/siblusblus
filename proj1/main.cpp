@@ -1,5 +1,10 @@
+#include "prog.h"
 #include <iostream>
 
+using prog::technician;
+
 int main() {
-    std::cout << "Hello World!\n";
+    technician();
+    return 0;
+
 }
