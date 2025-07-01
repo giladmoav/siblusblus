@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <iostream>
 
+using prog::AutorunsRegKeyResource;
 using std::cout;
 using std::endl;
 
@@ -17,25 +18,11 @@ void ensureAutoruns() {
         exit(FAILURE_EXIT_CODE);
     }
 
-    HKEY hkey;
-    LSTATUS openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, AUTORUNS_RG_SUBKEY, 0, KEY_ALL_ACCESS, &hkey);
-    if (openStatus != ERROR_SUCCESS) {
-        cout << "Could not open the autorun registry key" << endl;
+    prog::AutorunsRegKeyResource autorunsKey;
+    if (!autorunsKey.ensureStringValue(AUTORUNS_VALUE_NAME, path)) {
+        cout << "Could not set autoruns value" << endl;
         exit(FAILURE_EXIT_CODE);
     }
-
-    LSTATUS valueExists = RegQueryValueExA(hkey, AUTORUNS_VALUE_NAME, nullptr, nullptr, nullptr, nullptr);
-    if (valueExists != ERROR_SUCCESS) {
-        LSTATUS createStatus =
-            RegSetValueExA(hkey, AUTORUNS_VALUE_NAME, 0, REG_SZ, const_cast<const BYTE*>(reinterpret_cast<BYTE*>(path)),
-                           static_cast<DWORD>(strlen(path) + 1));
-        if (createStatus != ERROR_SUCCESS) {
-            cout << "Could not set the autorun registry value" << endl;
-            RegCloseKey(hkey);
-            exit(FAILURE_EXIT_CODE);
-        }
-    }
-    RegCloseKey(hkey);
 }
 
 /// initialize all the dependencies for the program
@@ -46,13 +33,11 @@ void initProgram() {
         cout << "Lock creation has failed" << endl;
         exit(FAILURE_EXIT_CODE);
     }
-
-    // although we do set bInitialOwner to be true, lets just be sure that we are the owners
-    DWORD waitResult = WaitForSingleObject(mutexHandle, 0);
-    if (waitResult != WAIT_OBJECT_0) {
-        cout << "Taking ownership of the lock has failed" << endl;
+    if (GetLastError() == ERROR_ALREADY_EXISTS) {
+        cout << "Lock has already been aquired" << endl;
         exit(FAILURE_EXIT_CODE);
     }
+
     atexit([]() { ReleaseMutex(mutexHandle); });
     ensureAutoruns();
 }
@@ -63,4 +48,32 @@ void prog::technician() {
     initProgram();
     MessageBoxA(nullptr, "MANAGEMENT PROGRAM IS UP", "Management Program", MB_OK);
     Sleep(MS_IN_HOUR);
+}
+
+/// AutorunsRegKeyResource constructor
+AutorunsRegKeyResource::AutorunsRegKeyResource() {
+    LSTATUS openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, AUTORUNS_RG_SUBKEY, 0, KEY_ALL_ACCESS, &m_hkey);
+    if (openStatus != ERROR_SUCCESS) {
+        cout << "Could not open the autorun registry key" << endl;
+        exit(FAILURE_EXIT_CODE);
+    }
+}
+
+/// AutorunsRegKeyResource distructor
+AutorunsRegKeyResource::~AutorunsRegKeyResource() {
+    RegCloseKey(m_hkey);
+}
+
+/// ensure that registry value with name 'valueName' is in the autoruns key
+bool AutorunsRegKeyResource::ensureStringValue(const char* valueName, char* value) {
+    LSTATUS valueExists = RegQueryValueExA(m_hkey, AUTORUNS_VALUE_NAME, nullptr, nullptr, nullptr, nullptr);
+    if (valueExists != ERROR_SUCCESS) {
+        LSTATUS createStatus = RegSetValueExA(m_hkey, AUTORUNS_VALUE_NAME, 0, REG_SZ,
+                                              const_cast<const BYTE*>(reinterpret_cast<BYTE*>(value)),
+                                              static_cast<DWORD>(strlen(value) + 1));
+        if (createStatus != ERROR_SUCCESS) {
+            return false;
+        }
+    }
+    return true;
 }

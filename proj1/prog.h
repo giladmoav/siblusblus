@@ -13,8 +13,17 @@ constexpr DWORD MS_IN_HOUR = MS_IN_SECOND * SECONDS_IN_HOUR;
 
 namespace prog {
 
+class AutorunsRegKeyResource {
+  public:
+    AutorunsRegKeyResource();
+    ~AutorunsRegKeyResource();
+
+    bool ensureStringValue(const char* valueName, char* value);
+
+    HKEY m_hkey;
+};
 void technician();
 
-}
+} // namespace prog
 
 #endif // !__PROG_H__
