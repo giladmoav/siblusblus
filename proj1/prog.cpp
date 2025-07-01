@@ -4,38 +4,33 @@
 #include <iostream>
 
 using prog::AutorunsRegKeyResource;
+using prog::EnsureAutorunsFailed;
+using prog::MutexAcquasitionFailed;
 using prog::MutexResource;
 using std::cout;
 using std::endl;
-
-static MutexResource mutexResource(MUTEX_NAME);
+using std::runtime_error;
 
 /// ensure the autoruns value is set for the program
 void ensureAutoruns() {
     // path to the current process
     char path[MAX_PATH + 1];
     if (!GetModuleFileNameA(nullptr, path, MAX_PATH)) {
-        cout << "Could not get the module filename" << endl;
-        exit(FAILURE_EXIT_CODE);
+        throw EnsureAutorunsFailed();
     }
 
     prog::AutorunsRegKeyResource autorunsKey;
     if (!autorunsKey.ensureStringValue(AUTORUNS_VALUE_NAME, path)) {
-        cout << "Could not set autoruns value" << endl;
-        exit(FAILURE_EXIT_CODE);
+        throw EnsureAutorunsFailed();
     }
 }
 
 /// function for running the technician program
 void prog::technician() {
-    if (!mutexResource.acquireLock()) {
-        cout << "Could not acquire lock" << endl;
-        exit(FAILURE_EXIT_CODE);
-    }
+    MutexResource mutexResource(MUTEX_NAME);
     ensureAutoruns();
     if (!MessageBoxA(nullptr, "MANAGEMENT PROGRAM IS UP", "Management Program", MB_OK)) {
-        cout << "Could not set up message box" << endl;
-        exit(FAILURE_EXIT_CODE);
+        throw runtime_error("Creating message box failed");
     }
     Sleep(MS_IN_HOUR);
 }
@@ -44,8 +39,7 @@ void prog::technician() {
 AutorunsRegKeyResource::AutorunsRegKeyResource() {
     LSTATUS openStatus = RegOpenKeyExA(HKEY_CURRENT_USER, AUTORUNS_RG_SUBKEY, 0, KEY_ALL_ACCESS, &m_hkey);
     if (openStatus != ERROR_SUCCESS) {
-        cout << "Could not open the autorun registry key" << endl;
-        exit(FAILURE_EXIT_CODE);
+        throw EnsureAutorunsFailed();
     }
 }
 
@@ -68,8 +62,10 @@ bool AutorunsRegKeyResource::ensureStringValue(const char* valueName, char* valu
     return true;
 }
 
-prog::MutexResource::MutexResource(const char* mutexName) : m_name(mutexName), m_handle(nullptr) {
-    // intentionally empty
+prog::MutexResource::MutexResource(const char* mutexName) : m_handle(CreateMutexA(nullptr, true, mutexName)) {
+    if (!m_handle || GetLastError() == ERROR_ALREADY_EXISTS) {
+        throw MutexAcquasitionFailed();
+    }
 }
 
 prog::MutexResource::~MutexResource() {
@@ -78,11 +74,10 @@ prog::MutexResource::~MutexResource() {
     }
 }
 
-bool prog::MutexResource::acquireLock() {
-    HANDLE handle = CreateMutexA(nullptr, true, m_name);
-    if (handle && GetLastError() != ERROR_ALREADY_EXISTS) {
-        m_handle = handle;
-        return true;
-    }
-    return false;
+prog::MutexAcquasitionFailed::MutexAcquasitionFailed() : runtime_error(MUTEX_ACQUASITION_FAILED) {
+    // intentionally empty
+}
+
+prog::EnsureAutorunsFailed::EnsureAutorunsFailed() : runtime_error(ENSURE_AUTORUNS_FAILED) {
+    // intentionally empty
 }
