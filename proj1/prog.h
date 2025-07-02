@@ -49,17 +49,6 @@ class MutexResource {
     HANDLE m_handle;
 };
 
-class SocketResource {
-  public:
-    explicit SocketResource(const char* port);
-    ~SocketResource();
-
-    SOCKET accept_client();
-
-  private:
-    SOCKET m_socket;
-};
-
 void technician();
 
 } // namespace prog

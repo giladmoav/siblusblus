@@ -16,6 +16,8 @@ const std::string UNKNOWN_COMMAND = "Unkown command";
 namespace server {
 
 void runServer();
+bool sendMsg(SOCKET client, std::string msg);
+std::string recvMsg(SOCKET client);
 
 class SocketError : public std::runtime_error {
   public:
@@ -27,10 +29,14 @@ class SocketResource {
     explicit SocketResource(const char* port);
     ~SocketResource();
 
-    SOCKET accept_client();
+    void bindSocket();
+    void startListen();
+    SOCKET acceptClient();
 
   private:
     SOCKET m_socket;
+    sockaddr* m_addr;
+    size_t m_addrlen;
 };
 
 } // namespace server

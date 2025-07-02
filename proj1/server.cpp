@@ -2,11 +2,11 @@
 #include <iostream>
 #include <ws2tcpip.h>
 
-using server::SocketError;
-using server::SocketResource;
 using std::cout;
 using std::endl;
 using std::string;
+
+namespace server {
 
 SocketResource::SocketResource(const char* port) {
     WSADATA wsaData;
@@ -33,28 +33,30 @@ SocketResource::SocketResource(const char* port) {
         WSACleanup();
         throw SocketError();
     }
-    if (bind(m_socket, result->ai_addr, static_cast<int>(result->ai_addrlen)) == SOCKET_ERROR) {
-        freeaddrinfo(result);
-        closesocket(m_socket);
-        WSACleanup();
-        throw SocketError();
-    }
+    m_addr = result->ai_addr;
+    m_addrlen = result->ai_addrlen;
     freeaddrinfo(result);
-
-    if (listen(m_socket, SOMAXCONN) == SOCKET_ERROR) {
-        closesocket(m_socket);
-        WSACleanup();
-        throw SocketError();
-    }
 }
 
 SocketResource::~SocketResource() {
-    int closeStatus = closesocket(m_socket);
-    int cleanupStatus = WSACleanup();
+    closesocket(m_socket);
+    WSACleanup();
+}
+
+void SocketResource::bindSocket() {
+    if (bind(m_socket, m_addr, static_cast<int>(m_addrlen)) == SOCKET_ERROR) {
+        throw SocketError();
+    }
+}
+
+void SocketResource::startListen() {
+    if (listen(m_socket, SOMAXCONN) == SOCKET_ERROR) {
+        throw SocketError();
+    }
 }
 
 /// accept clients for the socket resource
-SOCKET SocketResource::accept_client() {
+SOCKET SocketResource::acceptClient() {
     return accept(m_socket, nullptr, nullptr);
 }
 
@@ -64,7 +66,7 @@ SocketError::SocketError() : runtime_error(SOCKET_ERROR_MSG) {
 
 /// recieve a message from client
 string recvMsg(SOCKET client) {
-    // please i dont care about endianess
+    // please i dont care about network endianess (big endian)
     // we use unsigned int and not size_t because the next recv will need to use this variable and is limited to int
     unsigned int msgLength;
     int status = recv(client, reinterpret_cast<char*>(&msgLength), sizeof(int), 0);
@@ -88,14 +90,12 @@ bool sendMsg(SOCKET client, string msg) {
     }
     unsigned int msgLength = static_cast<unsigned int>(msg.size());
 
-    int status = send(client, reinterpret_cast<char*>(&msgLength), sizeof(int), 0);
-    if (status == SOCKET_ERROR) {
-        cout << "There was an error sending: " << msg.c_str() << endl;
+    if (send(client, reinterpret_cast<char*>(&msgLength), sizeof(int), 0) == SOCKET_ERROR) {
+        cout << "There was an error sending \"" << msg.c_str() << "\": " << WSAGetLastError() << endl;
         return false;
     }
-    status = send(client, msg.c_str(), msgLength, 0);
-    if (status == SOCKET_ERROR) {
-        cout << "There was an error sending: " << msg.c_str() << endl;
+    if (send(client, msg.c_str(), msgLength, 0) == SOCKET_ERROR) {
+        cout << "There was an error sending \"" << msg.c_str() << "\": " << WSAGetLastError() << endl;
         return false;
     }
     cout << "Successfully sent: " << msg.c_str() << endl;
@@ -103,11 +103,13 @@ bool sendMsg(SOCKET client, string msg) {
 }
 
 /// run server using the port configured
-void server::runServer() {
+void runServer() {
     SocketResource sock(PORT);
+    sock.bindSocket();
+    sock.startListen();
     cout << "Server is up..." << endl;
     while (1) {
-        SOCKET client = sock.accept_client();
+        SOCKET client = sock.acceptClient();
         cout << "Client connected!" << endl;
         string msg = recvMsg(client);
         if (msg == EMPTY_STR) {
@@ -121,3 +123,5 @@ void server::runServer() {
         }
     }
 }
+
+} // namespace server

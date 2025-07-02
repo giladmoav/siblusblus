@@ -29,9 +29,6 @@ void ensureAutoruns() {
 void prog::technician() {
     MutexResource mutexResource(MUTEX_NAME);
     ensureAutoruns();
-    // if (!MessageBoxA(nullptr, "MANAGEMENT PROGRAM IS UP", "Management Program", MB_OK)) {
-    //     throw runtime_error("Creating message box failed");
-    // }
     runServer();
 }
 

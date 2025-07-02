@@ -6,7 +6,7 @@ import socket
 LENGTH_TYPE = "I"
 
 
-def setup_connection(ip, port):
+def setup_connection(ip, port) -> socket.socket:
     """Set up a TCP connection to the server"""
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((ip, port))
