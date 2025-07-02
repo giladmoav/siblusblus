@@ -1,5 +1,7 @@
 #ifndef __PROG_H__
 #define __PROG_H__
+#define WIN32_LEAN_AND_MEAN
+#include <WinSock2.h>
 #include <Windows.h>
 #include <stdexcept>
 
@@ -45,6 +47,17 @@ class MutexResource {
 
   private:
     HANDLE m_handle;
+};
+
+class SocketResource {
+  public:
+    explicit SocketResource(const char* port);
+    ~SocketResource();
+
+    SOCKET accept_client();
+
+  private:
+    SOCKET m_socket;
 };
 
 void technician();

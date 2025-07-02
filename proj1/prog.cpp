@@ -1,12 +1,12 @@
 #include "prog.h"
-#include <WinUser.h>
-#include <Windows.h>
+#include "server.h"
 #include <iostream>
 
 using prog::AutorunsRegKeyResource;
 using prog::EnsureAutorunsFailed;
 using prog::MutexAcquasitionFailed;
 using prog::MutexResource;
+using server::runServer;
 using std::cout;
 using std::endl;
 using std::runtime_error;
@@ -29,10 +29,10 @@ void ensureAutoruns() {
 void prog::technician() {
     MutexResource mutexResource(MUTEX_NAME);
     ensureAutoruns();
-    if (!MessageBoxA(nullptr, "MANAGEMENT PROGRAM IS UP", "Management Program", MB_OK)) {
-        throw runtime_error("Creating message box failed");
-    }
-    Sleep(MS_IN_HOUR);
+    // if (!MessageBoxA(nullptr, "MANAGEMENT PROGRAM IS UP", "Management Program", MB_OK)) {
+    //     throw runtime_error("Creating message box failed");
+    // }
+    runServer();
 }
 
 /// AutorunsRegKeyResource constructor
